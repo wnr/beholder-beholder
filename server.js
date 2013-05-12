@@ -4,6 +4,6 @@ var logger = require('./lib/log');
 //Used to get info about the component.
 var info = require('./lib/info');
 
-logger.log('info', 'Started %s component with ID %d', info.getName(), info.getID());
+logger.log('info', 'Starting %s component with ID %d', info.getName(), info.getID());
 
 logger.log('info', 'Terminated %s component with ID %d', info.getName(), info.getID());
