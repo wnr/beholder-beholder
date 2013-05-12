@@ -48,3 +48,24 @@ This will be called after a successful scan. If there was changes to the site, t
   }
 ```
 This can be called to obtain the scan frequency of a site url.
+
+``` json
+  {
+    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions?fields=(selector, subscription_id)",
+    "method": "GET",
+    "response": [ <selector>, <selector>, <selector>, ... ]
+  }
+```
+This will be called to obtain all DOM selectors which shall be scanned for changes within a site.
+
+``` json
+  {
+    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions/<subscription_id>",
+    "method": "UPDATE",
+    "params": {
+      "action": "invalidate"
+    }
+    "response": null
+  }
+```
+This will be called when a site have changed so that the given subscription selector no longer can be found.
