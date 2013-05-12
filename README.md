@@ -21,6 +21,18 @@ Describes the API calls this component will respond to.
 ```
 This will trigger a scan for site changes of a specific site. All urls given in the array will be scanned.
 
+``` json
+  {
+    "url": "/config",
+    "method": "UPDATE",
+    "params": {
+        "api": <url>,
+      },
+    "response": null
+  }
+```
+This sets the base url of the API which this component will make API calls to.
+
 ## Outgoing
 Describes the API calls this component will make.
 
@@ -51,7 +63,7 @@ This can be called to obtain the scan frequency of a site url.
 
 ``` json
   {
-    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions?fields=(selector, subscription_id)",
+    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions?fields=(selector)",
     "method": "GET",
     "response": [ <selector>, <selector>, <selector>, ... ]
   }
@@ -60,12 +72,13 @@ This will be called to obtain all DOM selectors which shall be scanned for chang
 
 ``` json
   {
-    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions/<subscription_id>",
+    "url": "api/sites/<site_id>/urls/<url_id>/subscriptions",
     "method": "UPDATE",
     "params": {
       "action": "invalidate"
+      "selector": <selector>
     }
     "response": null
   }
 ```
-This will be called when a site have changed so that the given subscription selector no longer can be found.
+This will be called when a site have changed so that the given subscription selector no longer can be found. This will invalidate all subscriptions with the specified selector.
