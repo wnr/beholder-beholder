@@ -37,3 +37,14 @@ Describes the API calls this component will make.
   }
 ```
 This will be called after a successful scan. If there was changes to the site, the changes parameter will contain the changes. Otherwise, the same call will be made but without the changes parameter.
+
+``` json
+  {
+    "url": "api/sites/<site_id>/urls/<url_id>?fields=(frequency)",
+    "method": "GET",
+    "response": {
+      "frequency": <scan_frequency>
+    }
+  }
+```
+This can be called to obtain the scan frequency of a site url.
