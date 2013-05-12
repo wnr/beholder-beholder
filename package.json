@@ -1,0 +1,19 @@
+{
+  "name": "Beholder",
+  "version": "v0.0.1",
+  "author": "Lucas Wiener",
+  "description": "The website change scanning component of the Beholder service.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mrWiener/beholder-beholder.git"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "~3.2.4",
+    "winston": "~0.7.1",
+    "nconf": "~0.6.7",
+    "validator": "~1.1.1"
+  }
+}
