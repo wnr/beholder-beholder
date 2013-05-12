@@ -14,7 +14,7 @@ Describes the API calls this component will respond to.
     "method": "POST",
     "params": {
         "site": <site>,
-        "urls": [ <urls> ]
+        "urls": [ <url>, <url>, <url>, ... ]
       },
     "response": null
   }
