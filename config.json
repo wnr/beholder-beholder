@@ -1,10 +1,10 @@
 {
 	"api": {
 		"incoming": {
-			"port": 8001
+			"port": 8010
 		},
 		"outgoing": {
-			"port": 8888,
+			"port": 8000,
 			"domain": "localhost",
 			"protocol": "http",
 			"base_url": "/api/v1/"
