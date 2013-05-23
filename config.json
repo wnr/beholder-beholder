@@ -9,5 +9,8 @@
 			"protocol": "http",
 			"base_url": "/api/v1/"
 		}
+	},
+	"component": {
+		"id": 0
 	}
 }
