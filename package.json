@@ -8,12 +8,17 @@
     "url": "git@github.com:mrWiener/beholder-beholder.git"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "make test"
   },
   "dependencies": {
     "express": "~3.2.4",
     "winston": "~0.7.1",
     "nconf": "~0.6.7",
     "validator": "~1.1.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.10.0",
+    "expect.js": "~0.2.0"
   }
 }
