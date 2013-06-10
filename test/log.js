@@ -1,127 +1,161 @@
-//Since the logger object relies on config values on init, the test checks the values used in the config.
-var config = require('../lib/config.js');
+//-----------------------------------------------
+// Dependencies
+//-----------------------------------------------
 
 //The test will use expect to validate.
 var expect = require('expect.js');
 
-//Filename depends on info module, so require it.
-var info = require('../lib/info.js');
+//The log object to be tested.
+var log = require('../lib/log.js');
 
-//The logger to be tested. This should not be used in the tests directly since it need to
-//be reinitialized on config changes. Use getLogger function.
-var _logger = require('../lib/log.js');
+//Require 'winston' to compare with the object created by log.js.
+var winston = require('winston');
 
-//A function to require and return the newly initialized logger object.
-function getLogger() {
-	//Reinitialize the required _logger object and return it.
-	return _logger.init();
-};
+//-----------------------------------------------
+// Tests
+//-----------------------------------------------
 
-//Tests for the lib/logs.js file.
 describe('log', function() {
-	//Test the default configs.
+	describe('init()', function() {
+		it('should be a function', function() {
+			//The init function should be defined.
+			expect(log.init).to.be.a('function');
+		});
 
-	it('should respond to config:logs:colorize', function() {
-		//Test setting colorize to false.
-		testTransportsProperty(false, 'colorize');
+		it('should init with default values', function() {
+			//Init a new instance.
+			var logger = log.init();
 
-		//Test setting colorize to true.
-		testTransportsProperty(true, 'colorize');
-	});
+			//Option 'colorize' should be defaulted to 'true'.
+			testTransportsProperty(logger, 'colorize', true);
 
-	it('should respond to config:logs:timestamp', function() {
-		//Test setting timestamp to false.
-		testTransportsProperty(false, 'timestamp');
+			//Option 'timestamp' should be defaulted to 'true'.
+			testTransportsProperty(logger, 'timestamp', true);
 
-		//test setting timestamp to true.
-		testTransportsProperty(true, 'timestamp');
-	});
+			//Option 'console' should be defaulted to 'true', and therefore the instance should be logging to console.
+			expect(logger._names).to.contain('console');
 
-	it('should respond to config:logs:log_to_console', function() {
-		//Set config to not log to console.
-		config.set('logs:log_to_console', false);
+			//Option 'file' should be defaulted to 'false', and therefore the instance should not be logging to file.
+			expect(logger._names).to.not.contain('file');			
+		});
 
-		//Require the logger.
-		var logger = getLogger();
+		it('should respond to option:colorize', function() {			
+			//Variable to hold 'logger' instances.
+			var logger;
 
-		//Expect it not to have a console logger.
-		expect(logger._names).to.not.contain('console');
+			//Create an instance with 'colorize' set to 'false'.
+			logger = log.init({ colorize: false });
 
-		//Set config to log to console.
-		config.set('logs:log_to_console', true);
+			//Test the properties of all transports to be affected by the 'colorize' option.
+			testTransportsProperty(logger, 'colorize', false);
 
-		//Test the console transport.
-		testTransportConfigProperties('console');
-	});
+			//Create an instance with 'colorize' set to true.
+			logger = log.init({ colorize: false });
 
-	it('should respond to config:logs:log_to_file', function() {
-		//Set config to not log to file.
-		config.set('logs:log_to_file', false);
+			//Test the properties of all transports to be affected by the 'colorize' option.
+			testTransportsProperty(logger, 'colorize', false);
 
-		//Require the logger.
-		var logger = getLogger();
+			//Create an instance with 'colorize' set to 'false' and with 'file' to '/tmp/test.txt'.
+			logger = log.init({ colorize: false, file: '/tmp/test.txt' });
 
-		//Expect it not to contain the file transport object.
-		expect(logger._names).to.not.contain('file');
+			//The 'colorize' property should be false for all transports.
+			testTransportsProperty(logger, 'colorize', false);
+		});
 
-		//Set config to log to a combined file with basedir /tmp/.
-		config.set('logs:log_to_file', true);
-		config.set('logs:basedir', '/tmp/');
-		config.set('logs:combined', true);
+		it('should respond to option:timestamp', function() {
+			//Variable to hold 'logger' instances.
+			var logger;
 
-		//Expect a file transport to exist with right properties.
-		testTransportConfigProperties('file');
+			//Create an instance with 'timestamp' set to 'false'.
+			logger = log.init({ timestamp: false });
 
-		//Get the logger object.
-		logger = getLogger();
+			//Test the properties of all transports to be affected by the 'timestamp' option.
+			testTransportsProperty(logger, 'timestamp', false);
 
-		//Test for right filepath. Winston strips the last / so add it while testing.
-		expect(logger.transports.file.dirname + '/').to.equal(config.get('logs:basedir'));
+			//Create an instance with 'timestamp' set to true.
+			logger = log.init({ timestamp: false });
 
-		//Test for right filename.
-		expect(logger.transports.file.filename).to.equal(info.getName() + '-' + info.getID() + '.log');
-	});
+			//Test the properties of all transports to be affected by the 'timestamp' option.
+			testTransportsProperty(logger, 'timestamp', false);
+
+			//Create an instance with 'timestamp' set to 'false' and with 'file' to '/tmp/test.txt'.
+			logger = log.init({ timestamp: false, file: '/tmp/test.txt' });
+
+			//The 'timestamp' property should be false for all transports.
+			testTransportsProperty(logger, 'timestamp', false);
+		});
+
+		it('should respond to option:console', function() {
+			//Variable to hold 'logger' instances.
+			var logger;
+
+			//Create an instance with 'console' set to 'false'.
+			logger = log.init({ console: false });
+
+			//Expect it not to have a console transport.
+			expect(logger._names).to.not.contain('console');
+
+			//Create an instance with 'console' set to 'true'.
+			logger = log.init({ console: true });
+
+			//Expect it to have a console transport.
+			expect(logger._names).to.contain('console');
+		});
+
+		it('should respond to option:file', function() {
+			//Variable to hold 'logger' instances.
+			var logger;
+
+			//Create an instance with 'file' set to 'false'.
+			logger = log.init({ file: false });
+
+			//Expect it not to have a file transport.
+			expect(logger._names).to.not.contain('file');
+
+			//Create an instance with 'file' set to '/tmp/test.txt'.
+			logger = log.init({ file: '/tmp/test.txt' });
+
+			//Expect it to have a file transport.
+			expect(logger._names).to.contain('file');
+
+			//Test for right filename. Winston strips the last / so add it while testing.
+			expect(logger.transports.file.dirname + '/' + logger.transports.file.filename).to.equal('/tmp/test.txt');
+		});
+
+		it('should throw errors on invalid options', function() {
+			//Variable to hold 'logger' instances.
+			var logger;
+
+			//Expect init to throw error when 'colorize' is not a boolean.
+			expect(function() { log.init({ colorize: 'not boolean' }); }).to.throwError();
+
+			//Expect init to throw error when 'timestamp' is not a boolean.
+			expect(function() { log.init({ timestamp: 'not boolean' }); }).to.throwError();
+
+			//Expect init to throw error when 'console' is not a boolean.
+			expect(function() { log.init({ console: 'not boolean' }); }).to.throwError();
+
+			//Expect init to throw error when 'file' is not a string.
+			expect(function() { log.init({ file: true }); }).to.throwError();
+		});
+	})
 });
 
-//Function to test all transports in the logger object to see if they respond to config values.
-//Will force config value to <value> and then expect the property <property> of all transports
-//To be the same value <value>. The is set to "logs:<configName>", and if no <configName> is given
-//then <configName> = <property>.
-function testTransportsProperty(value, property, configName) {
-	//Check if configName is not set.
-	if(configName === undefined) {
-		//Set it to same as property.
-		configName = property;
-	}
+//-----------------------------------------------
+// Private functions
+//-----------------------------------------------
 
-	//Force config to set logs:<configName> to parameter value.
-	config.set('logs:' + configName, value);
-
-	//Require the logger object.
-	var logger = getLogger();
-
-	//This should the affect the property object of all transports. Loop through all transports.
+/**
+ * Function to test transports properties of a logger instance.
+ *
+ * @param {logger} 			The instance of the logger to be tested.
+ * @param {property} 		The property to be tested of the logger's transports.
+ * @param {value}				The value that the property should equal.
+ */
+function testTransportsProperty(logger, property, value) {
+	//Loop through all transports of the logger object.
 	for (var i = logger.transports.length - 1; i >= 0; i--) {
-		//Expect the value of transports object <property> to be same as set in config.
+		//Expect the value of transports object 'property' to be same as 'value'.
 		expect(logger.transports[i][property]).to.equal(value);
 	};
-};
-
-//Function to test if the given transport exists in the logger object and that the
-//properties matches with the ones given in the config.
-function testTransportConfigProperties(transport) {
-	//Get a freshly initialized logger object.
-	var logger = getLogger();
-
-	//Expect the logger to contain the transport.
-	expect(logger._names).to.contain(transport);
-
-	//Then it should also exist a transports object with the same name.
-	expect(logger.transports[transport]).to.be.an('object');
-
-	//Expect the colorize property to be the same as set in config.
-	expect(logger.transports[transport].colorize).to.equal(config.get('logs:colorize'));
-
-	//Expect the timestamp property to be the same as set in config.
-	expect(logger.transports[transport].timestamp).to.equal(config.get('logs:timestamp'));
-};
+}
