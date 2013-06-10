@@ -1,3 +1,7 @@
+//-----------------------------------------------
+// Dependencies
+//-----------------------------------------------
+
 //Test will use expect.js
 var expect = require('expect.js');
 
@@ -6,6 +10,10 @@ var info = require('../lib/info');
 
 //Will cross reference with package.json for expectation checks.
 var packageJSON = require('../package.json');
+
+//-----------------------------------------------
+// Tests
+//-----------------------------------------------
 
 //Info tests.
 describe('info', function() {
@@ -51,19 +59,6 @@ describe('info', function() {
 				//The are the same size, and should therefore be equal.
 				expect(version).to.be(info.getVersion());
 			}
-		});
-	});
-
-	//Test getID function.
-	describe('getID()', function() {
-		it('should be a function', function() {
-			//There should be a function named getID.
-			expect(info.getID).to.be.a('function');
-		});
-
-		it('should be numerical', function() {
-			//Expect the id to be numberical.
-			expect(info.getID()).to.be.a('number');	
 		});
 	});
 });
