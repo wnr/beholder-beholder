@@ -69,5 +69,13 @@ describe('utils', function() {
 			//The same should happen when 'default' value is set.
 			expect(function() { utils.validate('other value', 'default value', validator); }).to.throwError();
 		});
+
+		it('should use the default validator when string is present as third argument', function() {
+			//Should return 'actual' if 'actual' is set to a number and 'validator' set to the string 'number'.
+			expect(utils.validate(1337, undefined, 'number')).to.equal(1337);
+
+			//Should throw an error if 'actual' is set to a number and 'validator' set a string != 'number'.
+			expect(function() { utils.validate(1337, undefined, 'a string'); }).to.throwError();
+		});
 	});
 });
