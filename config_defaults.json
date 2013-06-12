@@ -16,7 +16,7 @@
 	"logs": {
 		"colorize": true,
 		"timestamp": true,
-		"log_to_file": false,
-		"log_to_console": true
+		"file": false,
+		"console": true
 	}
 }
