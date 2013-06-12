@@ -6,5 +6,8 @@ REPORTER = spec
 test: 
 	./node_modules/.bin/mocha --reporter $(REPORTER)
 
+test-w:
+	@NODE_ENV=test ./node_modules/.bin/mocha --reporter $(REPORTER) --growl --watch
+
 #Not having any target, so use phony for better performance.
-.PHONY: test
+.PHONY: test test-w
