@@ -42,7 +42,7 @@ describe('log', function() {
 		it('should respond to option:colorize', function() {			
 			//Variable to hold 'logger' instances.
 			var logger;
-
+			
 			//Create an instance with 'colorize' set to 'false'.
 			logger = log.init({ colorize: false });
 
